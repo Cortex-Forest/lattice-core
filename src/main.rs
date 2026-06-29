@@ -1,40 +1,40 @@
+mod transaction;
+mod mempool;
 mod block;
 mod blockchain;
 
-mod transaction;
-mod wallet;
-mod crypto;
-mod network;
-mod consensus;
-
+use transaction::Transaction;
+use mempool::Mempool;
 use blockchain::Blockchain;
 
 fn main() {
 
     println!("==============================");
-    println!(" Lattice Blockchain v0.4");
+    println!(" Lattice Blockchain v0.6.0");
     println!("==============================");
 
     let mut chain = Blockchain::new();
+    let mut mempool = Mempool::new();
 
-    chain.add_block("Alice -> Bob : 100 LAT".to_string());
+    // 添加交易
+    mempool.add_transaction(Transaction::new("Alice", "Bob", 100));
+    mempool.add_transaction(Transaction::new("Bob", "Charlie", 25));
+    mempool.add_transaction(Transaction::new("Charlie", "David", 10));
 
-    chain.add_block("Bob -> Charlie : 25 LAT".to_string());
+    println!("Transactions in mempool: {}", mempool.count());
 
-    chain.add_block("Charlie -> David : 10 LAT".to_string());
+    // 把 mempool 打包进区块
+    chain.add_block(mempool.transactions.clone());
+
+    mempool.transactions.clear();
 
     chain.print_chain();
 
     println!();
 
     if chain.is_valid() {
-
         println!("✅ Blockchain Valid");
-
     } else {
-
         println!("❌ Blockchain Invalid");
-
     }
-
 }

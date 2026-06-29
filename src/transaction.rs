@@ -6,10 +6,10 @@ pub struct Transaction {
 }
 
 impl Transaction {
-    pub fn new(from: String, to: String, amount: u64) -> Self {
+    pub fn new(from: &str, to: &str, amount: u64) -> Self {
         Self {
-            from,
-            to,
+            from: from.to_string(),
+            to: to.to_string(),
             amount,
         }
     }
