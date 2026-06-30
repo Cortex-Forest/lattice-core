@@ -1,21 +1,27 @@
 use crate::transaction::Transaction;
 
 pub struct Mempool {
-    pub transactions: Vec<Transaction>,
+    pub pending: Vec<Transaction>,
 }
 
 impl Mempool {
     pub fn new() -> Self {
         Self {
-            transactions: Vec::new(),
+            pending: vec![],
         }
     }
 
-    pub fn add_transaction(&mut self, tx: Transaction) {
-        self.transactions.push(tx);
+    pub fn add(&mut self, tx: Transaction) {
+        self.pending.push(tx);
     }
 
-    pub fn count(&self) -> usize {
-        self.transactions.len()
+    pub fn drain(&mut self) -> Vec<Transaction> {
+        let txs = self.pending.clone();
+        self.pending.clear();
+        txs
+    }
+
+    pub fn size(&self) -> usize {
+        self.pending.len()
     }
 }

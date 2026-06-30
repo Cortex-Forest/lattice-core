@@ -10,7 +10,7 @@ impl Blockchain {
     pub fn new() -> Self {
         let mut chain = Self {
             blocks: vec![],
-            difficulty: 4, // 👈 挖矿难度（可调）
+            difficulty: 4,
         };
 
         let genesis = Block::new(
@@ -37,6 +37,19 @@ impl Blockchain {
         self.blocks.push(block);
     }
 
+    pub fn mine_pending(&mut self, mempool: &mut crate::mempool::Mempool) {
+        if mempool.size() == 0 {
+            println!("⛔ No transactions in mempool");
+            return;
+        }
+
+        let txs = mempool.drain();
+
+        println!("⛏ Mining {} transactions...", txs.len());
+
+        self.add_block(txs);
+    }
+
     pub fn is_valid(&self) -> bool {
         for i in 1..self.blocks.len() {
             let cur = &self.blocks[i];
@@ -50,7 +63,6 @@ impl Blockchain {
                 return false;
             }
         }
-
         true
     }
 
