@@ -1,11 +1,14 @@
+use serde::{Serialize, Deserialize};
 use crate::crypto::hash;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Transaction {
     pub from: String,
     pub to: String,
     pub amount: u64,
+
     pub tx_hash: String,
+    pub signature: Option<String>,
 }
 
 impl Transaction {
@@ -15,6 +18,7 @@ impl Transaction {
             to: to.to_string(),
             amount,
             tx_hash: String::new(),
+            signature: None,
         };
 
         tx.tx_hash = tx.compute_hash();

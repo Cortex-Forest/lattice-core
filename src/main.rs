@@ -1,21 +1,25 @@
 mod blockchain;
 mod block;
 mod transaction;
-mod wallet;
 mod crypto;
 mod mempool;
-mod state;
-mod network;
-mod message;
+mod miner;
 
-use state::NodeState;
-use network::start_node;
+use std::sync::{Arc, RwLock};
 
-#[tokio::main]
-async fn main() {
-    println!("🚀 Lattice v4.1 Stable P2P Blockchain");
+use blockchain::Blockchain;
+use mempool::Mempool;
+use miner::start_miner;
 
-    let state = NodeState::new();
+fn main() {
+    println!("🚀 Lattice v5.0 Industrial Consensus Blockchain");
 
-    start_node("127.0.0.1:9000", state).await;
+    let chain = Arc::new(RwLock::new(Blockchain::new()));
+    let mempool = Arc::new(RwLock::new(Mempool::new()));
+
+    start_miner(chain.clone(), mempool.clone());
+
+    loop {
+        std::thread::sleep(std::time::Duration::from_secs(1));
+    }
 }

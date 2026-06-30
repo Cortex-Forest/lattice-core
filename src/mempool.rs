@@ -1,6 +1,5 @@
 use crate::transaction::Transaction;
 
-#[derive(Default)]
 pub struct Mempool {
     pub txs: Vec<Transaction>,
 }
