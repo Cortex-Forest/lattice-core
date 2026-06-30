@@ -1,13 +1,11 @@
-use sha2::{Digest, Sha256};
+use crate::crypto::hash;
 
-pub fn merkle_root(data: Vec<String>) -> String {
+pub fn merkle_root(data: &[String]) -> String {
     if data.is_empty() {
         return "0".to_string();
     }
 
-    let mut level = data.iter()
-        .map(|d| hash(d))
-        .collect::<Vec<_>>();
+    let mut level = data.to_vec();
 
     while level.len() > 1 {
         let mut next = vec![];
@@ -23,10 +21,4 @@ pub fn merkle_root(data: Vec<String>) -> String {
     }
 
     level[0].clone()
-}
-
-fn hash(s: &str) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(s.as_bytes());
-    hex::encode(hasher.finalize())
 }

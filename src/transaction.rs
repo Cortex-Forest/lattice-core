@@ -1,4 +1,4 @@
-use sha2::{Digest, Sha256};
+use crate::crypto::hash;
 
 #[derive(Debug, Clone)]
 pub struct Transaction {
@@ -22,11 +22,6 @@ impl Transaction {
     }
 
     pub fn compute_hash(&self) -> String {
-        let input = format!("{}{}{}", self.from, self.to, self.amount);
-
-        let mut hasher = Sha256::new();
-        hasher.update(input.as_bytes());
-
-        hex::encode(hasher.finalize())
+        hash(&format!("{}{}{}", self.from, self.to, self.amount))
     }
 }
