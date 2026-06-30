@@ -1,31 +1,13 @@
-use serde::{Serialize, Deserialize};
-use crate::crypto::hash;
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone)]
 pub struct Transaction {
     pub from: String,
+
+    // ⭐ 合约地址
     pub to: String,
-    pub amount: u64,
 
-    pub tx_hash: String,
-    pub signature: Option<String>,
-}
+    // ⭐ 方法名
+    pub method: String,
 
-impl Transaction {
-    pub fn new(from: &str, to: &str, amount: u64) -> Self {
-        let mut tx = Self {
-            from: from.to_string(),
-            to: to.to_string(),
-            amount,
-            tx_hash: String::new(),
-            signature: None,
-        };
-
-        tx.tx_hash = tx.compute_hash();
-        tx
-    }
-
-    pub fn compute_hash(&self) -> String {
-        hash(&format!("{}{}{}", self.from, self.to, self.amount))
-    }
+    // ⭐ 参数
+    pub args: Vec<String>,
 }

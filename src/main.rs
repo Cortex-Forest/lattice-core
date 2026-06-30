@@ -1,25 +1,36 @@
+mod vm;
+mod contract;
 mod blockchain;
-mod block;
 mod transaction;
-mod crypto;
-mod mempool;
-mod miner;
-
-use std::sync::{Arc, RwLock};
 
 use blockchain::Blockchain;
-use mempool::Mempool;
-use miner::start_miner;
+use transaction::Transaction;
 
 fn main() {
-    println!("🚀 Lattice v5.0 Industrial Consensus Blockchain");
+    println!("🚀 Lattice v6.0 Smart Contract VM");
 
-    let chain = Arc::new(RwLock::new(Blockchain::new()));
-    let mempool = Arc::new(RwLock::new(Mempool::new()));
+    let mut chain = Blockchain::new();
 
-    start_miner(chain.clone(), mempool.clone());
+    // ⭐ 部署合约
+    chain.vm.deploy("contract_1".to_string());
 
-    loop {
-        std::thread::sleep(std::time::Duration::from_secs(1));
-    }
+    // ⭐ set key-value
+    let tx1 = Transaction {
+        from: "alice".to_string(),
+        to: "contract_1".to_string(),
+        method: "set".to_string(),
+        args: vec!["name".to_string(), "Alice".to_string()],
+    };
+
+    println!("tx1 => {}", chain.process_tx(tx1));
+
+    // ⭐ get value
+    let tx2 = Transaction {
+        from: "bob".to_string(),
+        to: "contract_1".to_string(),
+        method: "get".to_string(),
+        args: vec!["name".to_string()],
+    };
+
+    println!("tx2 => {}", chain.process_tx(tx2));
 }

@@ -1,16 +1,10 @@
 [package]
 name = "lattice-node"
-version = "5.0.0"
+version = "6.0.0"
 edition = "2021"
 
 [dependencies]
 sha2 = "0.10"
 hex = "0.4"
-
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-
-tokio = { version = "1", features = ["full"] }
-
-ed25519-dalek = "2.1"
-rand = "0.8"

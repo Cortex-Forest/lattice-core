@@ -1,2 +1,6 @@
-"# lattice-core" 
-"# lattice-core" 
+Blockchain
+ ├── Blocks
+ ├── Mempool
+ ├── SmartContract VM  ⭐ NEW
+ ├── StateDB (key-value storage)
+ └── Dispatcher (function router)
