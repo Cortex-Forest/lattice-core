@@ -3,62 +3,60 @@ use crate::transaction::Transaction;
 
 pub struct Blockchain {
     pub blocks: Vec<Block>,
+    pub difficulty: usize,
 }
 
 impl Blockchain {
-
     pub fn new() -> Self {
+        let mut chain = Self {
+            blocks: vec![],
+            difficulty: 4, // 👈 挖矿难度（可调）
+        };
+
         let genesis = Block::new(
             0,
             "0".to_string(),
             vec![],
+            chain.difficulty,
         );
 
-        Self {
-            blocks: vec![genesis],
-        }
+        chain.blocks.push(genesis);
+        chain
     }
 
-    pub fn add_block(&mut self, transactions: Vec<Transaction>) {
-        let previous = self.blocks.last().unwrap();
+    pub fn add_block(&mut self, txs: Vec<Transaction>) {
+        let prev = self.blocks.last().unwrap();
 
         let block = Block::new(
-            previous.index + 1,
-            previous.hash.clone(),
-            transactions,
+            prev.index + 1,
+            prev.hash.clone(),
+            txs,
+            self.difficulty,
         );
 
         self.blocks.push(block);
     }
 
-    pub fn print_chain(&self) {
-        println!("\n========== Lattice Blockchain ==========");
-
-        for block in &self.blocks {
-            println!("{:#?}", block);
-        }
-    }
-
     pub fn is_valid(&self) -> bool {
         for i in 1..self.blocks.len() {
-            let current = &self.blocks[i];
-            let previous = &self.blocks[i - 1];
+            let cur = &self.blocks[i];
+            let prev = &self.blocks[i - 1];
 
-            let recalculated = Block::new(
-                current.index,
-                current.previous_hash.clone(),
-                current.transactions.clone(),
-            );
-
-            if current.hash != recalculated.hash {
+            if cur.hash != cur.calculate_hash() {
                 return false;
             }
 
-            if current.previous_hash != previous.hash {
+            if cur.previous_hash != prev.hash {
                 return false;
             }
         }
 
         true
+    }
+
+    pub fn print_chain(&self) {
+        for b in &self.blocks {
+            println!("{:#?}", b);
+        }
     }
 }
